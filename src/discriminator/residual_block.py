@@ -16,7 +16,7 @@ class ResidualBlockD(nn.Module):
 
         self.scale_conv = None
         if in_channels != out_channels:
-            self.scale_conv = nn.Conv2d(in_channels, out_channels, 1, stride=1, padding=0)
+            self.scale_conv = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0)
 
         self.gamma = nn.Parameter(torch.zeros(1))
 
