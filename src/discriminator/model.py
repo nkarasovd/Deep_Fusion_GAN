@@ -33,25 +33,25 @@ class Discriminator(nn.Module):
             nn.Conv2d(n_c * 2, 1, kernel_size=4, stride=1, padding=0, bias=False)
         )
 
-    def build_embeds(self, images: Tensor) -> Tensor:
+    def build_embeds(self, image: Tensor) -> Tensor:
         # [batch_size, 3, 256, 256]
-        out = self.img_forward(images)
+        out = self.img_forward(image)
         # [batch_size, 512, 4, 4]
 
         return out
 
-    def get_logits(self, image_embeddings: Tensor, sentence_embeddings: Tensor) -> Tensor:
+    def get_logits(self, image_embed: Tensor, sentence_embed: Tensor) -> Tensor:
         # bs = batch_size or batch_size - 1
 
-        # image_embeddings.shape = [bs, 512, 4, 4]
-        # sentence_embeddings.shape = [bs, sentence_embed_dim]
+        # image_embed.shape = [bs, 512, 4, 4]
+        # sentence_embed.shape = [bs, sentence_embed_dim]
 
-        sentence_embeddings = sentence_embeddings.view(-1, 256, 1, 1)
-        # sentence_embeddings.shape = [bs, sentence_embed_dim, 4, 4]
-        sentence_embeddings = sentence_embeddings.repeat(1, 1, 4, 4)
+        sentence_embed = sentence_embed.view(-1, 256, 1, 1)
+        # sentence_embed.shape = [bs, sentence_embed_dim, 4, 4]
+        sentence_embed = sentence_embed.repeat(1, 1, 4, 4)
 
         # h_c_code.shape = [bs, 512 + sentence_embed_dim, 4, 4]
-        h_c_code = torch.cat((image_embeddings, sentence_embeddings), 1)
+        h_c_code = torch.cat((image_embed, sentence_embed), 1)
 
         # logits.shape = [bs, 1, 1, 1] or [bs - 1, 1, 1, 1]
         logits = self.img_sentence_forward(h_c_code)
