@@ -20,11 +20,11 @@ class ResidualBlockD(nn.Module):
 
         self.gamma = nn.Parameter(torch.zeros(1))
 
-    def shortcut(self, x: Tensor) -> Tensor:
+    def _shortcut(self, x: Tensor) -> Tensor:
         if self.scale_conv is not None:
             x = self.scale_conv(x)
 
         return F.avg_pool2d(x, 2)
 
     def forward(self, x: Tensor) -> Tensor:
-        return self.shortcut(x) + self.gamma * self.residual_conv(x)
+        return self._shortcut(x) + self.gamma * self.residual_conv(x)
