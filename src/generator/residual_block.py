@@ -49,7 +49,7 @@ class ResidualBlockG(nn.Module):
     def _residual(self, x: Tensor, y):
         # DFBlock_1
         h_1 = self._df_block_1(x, y)
-        print("H_1", h_1.shape)
+
         # DFBlock_2
         h_2 = self._df_block_2(h_1, y)
 
