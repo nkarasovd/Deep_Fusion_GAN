@@ -1,5 +1,5 @@
+import torch
 import torch.nn as nn
-
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 
@@ -54,3 +54,10 @@ class RNNEncoder(nn.Module):
         sent_emb = hidden[0].transpose(0, 1).contiguous()
         sent_emb = sent_emb.view(-1, self.nhidden * self.num_directions)
         return words_emb, sent_emb
+
+    @staticmethod
+    def load(weights_path: str, ntoken: int) -> 'RNNEncoder':
+        text_encoder = RNNEncoder(ntoken, nhidden=256)
+        state_dict = torch.load(weights_path, map_location=lambda storage, loc: storage)
+        text_encoder.load_state_dict(state_dict)
+        return text_encoder
