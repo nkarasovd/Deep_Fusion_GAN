@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+from torch.nn.utils.rnn import pack_padded_sequence
 
 
 class RNNEncoder(nn.Module):
@@ -46,14 +46,14 @@ class RNNEncoder(nn.Module):
         output, hidden = self.rnn(emb)
         # PackedSequence object
         # --> (batch, seq_len, hidden_size * num_directions)
-        output = pad_packed_sequence(output, batch_first=True)[0]
+        # output = pad_packed_sequence(output, batch_first=True)[0]
         # output = self.drop(output)
         # --> batch x hidden_size*num_directions x seq_len
-        words_emb = output.transpose(1, 2)
+        # words_emb = output.transpose(1, 2)
         # --> batch x num_directions*hidden_size
         sent_emb = hidden[0].transpose(0, 1).contiguous()
         sent_emb = sent_emb.view(-1, self.nhidden * self.num_directions)
-        return words_emb, sent_emb
+        return sent_emb
 
     @staticmethod
     def load(weights_path: str, ntoken: int) -> 'RNNEncoder':

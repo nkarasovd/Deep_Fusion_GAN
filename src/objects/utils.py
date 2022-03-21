@@ -6,9 +6,9 @@ from torch import Tensor
 
 def prepare_data(batch: Tuple[Tensor, Tensor, Tensor, Tuple[str]],
                  device: torch.device) -> Tuple[Tensor, Tensor, Tensor, List[str]]:
-    images, captions, captions_lens, file_names = batch
+    images, captions, captions_len, file_names = batch
 
-    sorted_cap_lens, sorted_cap_indices = torch.sort(captions_lens, 0, True)
+    sorted_cap_lens, sorted_cap_indices = torch.sort(captions_len, 0, True)
     sorted_cap_lens = sorted_cap_lens.to(device)
 
     sorted_images = images[sorted_cap_indices].to(device)
