@@ -1,24 +1,7 @@
 import os
 
-from torch.utils.data import DataLoader
-from torchvision.transforms import transforms
-
 from src.deep_fusion_gan.model import DeepFusionGAN
-from src.objects.dataset import DFGANDataset
-from src.utils import fix_seed
-
-
-def create_loader(imsize: int, batch_size: int, data_dir: str, split: str) -> DataLoader:
-    assert split in ["train", "test"], "Wrong split type, expected train or test"
-    image_transform = transforms.Compose([
-        transforms.Resize(int(imsize * 76 / 64)),
-        transforms.RandomCrop(imsize),
-        transforms.RandomHorizontalFlip()
-    ])
-
-    dataset = DFGANDataset(data_dir, split, image_transform)
-
-    return DataLoader(dataset, batch_size=batch_size, drop_last=True, shuffle=True)
+from src.utils import create_loader, fix_seed
 
 
 def train():
