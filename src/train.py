@@ -1,10 +1,11 @@
 import os
+from typing import List, Tuple
 
 from src.deep_fusion_gan.model import DeepFusionGAN
 from src.utils import create_loader, fix_seed
 
 
-def train():
+def train() -> Tuple[List[float], List[float], List[float]]:
     fix_seed()
 
     data_path = "../data"
@@ -21,7 +22,7 @@ def train():
                           image_save_path=image_save_path,
                           gen_path_save=gen_path_save)
 
-    model.fit(train_loader)
+    return model.fit(train_loader)
 
 
 if __name__ == '__main__':
