@@ -1,5 +1,7 @@
 import os.path
+from typing import Tuple, List
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torchvision.utils as vutils
@@ -66,8 +68,11 @@ class DeepFusionGAN:
 
         return grad_norm
 
-    def fit(self, train_loader: DataLoader, num_epochs: int = 600):
+    def fit(self, train_loader: DataLoader, num_epochs: int = 600) -> Tuple[List[float], List[float], List[float]]:
+        g_losses_epoch, d_losses_epoch, d_gp_losses_epoch = [], [], []
         for epoch in trange(num_epochs, desc="Train Deep Fusion GAN"):
+
+            g_losses, d_losses, d_gp_losses = [], [], []
             for batch in train_loader:
                 images, captions, captions_len, _ = prepare_data(batch, self.device)
                 batch_size = images.shape[0]
@@ -98,12 +103,16 @@ class DeepFusionGAN:
                 d_loss.backward()
                 self.d_optim.step()
 
+                d_losses.append(d_loss.item())
+
                 grad_l2norm = self._compute_gp(images, sentence_embeds)
                 d_loss_gp = 2.0 * torch.mean(grad_l2norm ** 6)
 
                 self._zero_grad()
                 d_loss_gp.backward()
                 self.d_optim.step()
+
+                d_gp_losses.append(d_loss_gp.item())
 
                 fake_embeds = self.discriminator.build_embeds(fake_images)
                 fake_logits = self.discriminator.get_logits(fake_embeds, sentence_embeds)
@@ -113,9 +122,17 @@ class DeepFusionGAN:
                 g_loss.backward()
                 self.g_optim.step()
 
+                g_losses.append(g_loss.item())
+
+            g_losses_epoch.append(np.mean(g_losses))
+            d_losses_epoch.append(np.mean(d_losses))
+            d_gp_losses_epoch.append(np.mean(d_gp_losses))
+
             if (epoch + 1) % 10 == 0:
                 self._save_fake_image(fake_images, epoch)
                 self._save_gen_weights(epoch)
+
+        return g_losses_epoch, d_losses_epoch, d_gp_losses_epoch
 
     def _save_fake_image(self, fake_images: Tensor, epoch: int):
         img_path = os.path.join(self.image_save_path, f"fake_sample_epoch_{epoch}.png")
