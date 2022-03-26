@@ -79,13 +79,19 @@ Use `train_example.ipynb`, `metrics_evaluation.ipynb` and `eval_example.ipynb` t
  <img src="./images/red_birds.png" alt="Drawing", width=75%, height="100%">
 </p>
 
-### Small red bird has grey wings
+### A small yellow bird with green wings
+
+<p align="center">
+ <img src="./images/yellow_birds_2.png" alt="Drawing", width=75%, height="100%">
+</p>
+
+### A small red bird has grey wings
 
 <p align="center">
  <img src="./images/red.png" alt="Drawing", width=75%, height="100%">
 </p>
 
-### Small red bird has grey *long* wings
+### A small red bird has grey *long* wings
 
 <p align="center">
  <img src="./images/red_long.png" alt="Drawing", width=75%, height="100%">
